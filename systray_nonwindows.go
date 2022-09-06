@@ -25,9 +25,10 @@ func quit() {
 // SetIcon sets the systray icon.
 // iconBytes should be the content of .ico for windows and .ico/.jpg/.png
 // for other platforms.
-func SetIcon(iconBytes []byte) {
+func SetIcon(iconBytes []byte, iconBytesDark []byte) {
 	cstr := (*C.char)(unsafe.Pointer(&iconBytes[0]))
-	C.setIcon(cstr, (C.int)(len(iconBytes)), false)
+	cstrdark := (*C.char)(unsafe.Pointer(&iconBytesDark[0]))
+	C.setIcon(cstr, cstrdark, (C.int)(len(iconBytes)), (C.int)(len(iconBytesDark)), false)
 }
 
 // SetTitle sets the systray title, only available on Mac and Linux.

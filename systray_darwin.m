@@ -79,8 +79,19 @@ withParentMenuId: (int)theParentMenuId
   systray_on_exit();
 }
 
-- (void)setIcon:(NSImage *)image {
-  statusItem.button.image = image;
+- (void)setIcon:(NSArray*)images {
+  NSImage* imageLight = [images objectAtIndex:0];
+  NSImage* imageDark = [images objectAtIndex:1];
+
+  NSAppearance*appearance=statusItem.button.effectiveAppearance;
+  const char*cname=[appearance.name UTF8String];
+  NSString* appearanceName = [[NSString alloc] initWithUTF8String:cname];
+  if([[appearanceName lowercaseString] containsString:@"dark"]){
+    statusItem.button.image = imageDark;
+  }else{
+    statusItem.button.image = imageLight;
+  }
+
   [self updateTitleButtonStyle];
 }
 
@@ -235,12 +246,18 @@ void runInMainThread(SEL method, id object) {
                   waitUntilDone: YES];
 }
 
-void setIcon(const char* iconBytes, int length, bool template) {
+void setIcon(const char* iconBytes, const char* iconBytesDark, int length, int lengthDark, bool template) {
   NSData* buffer = [NSData dataWithBytes: iconBytes length:length];
   NSImage *image = [[NSImage alloc] initWithData:buffer];
   [image setSize:NSMakeSize(16, 16)];
   image.template = template;
-  runInMainThread(@selector(setIcon:), (id)image);
+
+  NSData* bufferDark = [NSData dataWithBytes: iconBytesDark length:lengthDark];
+  NSImage *imageDark = [[NSImage alloc] initWithData:bufferDark];
+  [imageDark setSize:NSMakeSize(16, 16)];
+  imageDark.template = template;
+
+  runInMainThread(@selector(setIcon:), @[image, (id)imageDark]);
 }
 
 void setMenuItemIcon(const char* iconBytes, int length, int menuId, bool template) {
