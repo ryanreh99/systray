@@ -835,7 +835,7 @@ func iconBytesToFilePath(iconBytes []byte) (string, error) {
 // SetIcon sets the systray icon.
 // iconBytes should be the content of .ico for windows and .ico/.jpg/.png
 // for other platforms.
-func SetIcon(iconBytes []byte) {
+func SetIcon(iconBytes []byte, iconBytesDupl []byte) {
 	iconFilePath, err := iconBytesToFilePath(iconBytes)
 	if err != nil {
 		log.Errorf("Unable to write icon data to temp file: %v", err)
@@ -852,7 +852,7 @@ func SetIcon(iconBytes []byte) {
 // templateIconBytes and iconBytes should be the content of .ico for windows and
 // .ico/.jpg/.png for other platforms.
 func SetTemplateIcon(templateIconBytes []byte, regularIconBytes []byte) {
-	SetIcon(regularIconBytes)
+	SetIcon(regularIconBytes, regularIconBytes)
 }
 
 // SetTitle sets the systray title, only available on Mac and Linux.
