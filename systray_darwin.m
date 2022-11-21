@@ -247,17 +247,19 @@ void runInMainThread(SEL method, id object) {
 }
 
 void setIcon(const char* iconBytes, const char* iconBytesDark, int length, int lengthDark, bool template) {
-  NSData* buffer = [NSData dataWithBytes: iconBytes length:length];
-  NSImage *image = [[NSImage alloc] initWithData:buffer];
-  [image setSize:NSMakeSize(16, 16)];
-  image.template = template;
+  @autoreleasepool {
+    NSData* buffer = [NSData dataWithBytes: iconBytes length:length];
+    NSImage *image = [[NSImage alloc] initWithData:buffer];
+    [image setSize:NSMakeSize(16, 16)];
+    image.template = template;
 
-  NSData* bufferDark = [NSData dataWithBytes: iconBytesDark length:lengthDark];
-  NSImage *imageDark = [[NSImage alloc] initWithData:bufferDark];
-  [imageDark setSize:NSMakeSize(16, 16)];
-  imageDark.template = template;
+    NSData* bufferDark = [NSData dataWithBytes: iconBytesDark length:lengthDark];
+    NSImage *imageDark = [[NSImage alloc] initWithData:bufferDark];
+    [imageDark setSize:NSMakeSize(16, 16)];
+    imageDark.template = template;
 
-  runInMainThread(@selector(setIcon:), @[image, (id)imageDark]);
+    runInMainThread(@selector(setIcon:), @[image, (id)imageDark]);
+  }
 }
 
 void setMenuItemIcon(const char* iconBytes, int length, int menuId, bool template) {
